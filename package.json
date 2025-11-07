@@ -1,0 +1,9 @@
+{
+  "name": "elif-college-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix Backend",
+    "install": "npm install --prefix Backend"
+  }
+}
