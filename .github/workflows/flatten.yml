@@ -18,10 +18,11 @@ jobs:
         run: |
           if [ -d "Elif website" ]; then
             shopt -s dotglob
-            mv "Elif website"/* .
-            mv "Elif website"/.[!.]* .
-            mv "Elif website"/..?* .
-            rmdir "Elif website"
+            mv "Elif website"/* . || true
+            mv "Elif website"/.[!.]* . || true
+            mv "Elif website"/..?* . || true
+            rmdir "Elif website" || true
+            git status
           else
             echo "Directory 'Elif website' not found. Skipping."
           fi
