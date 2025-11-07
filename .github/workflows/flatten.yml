@@ -1,37 +1,37 @@
 name: Flatten Repository
 
-   on:
-     workflow_dispatch:
+on:
+  workflow_dispatch:
 
-   permissions:
-     contents: write
+permissions:
+  contents: write
 
-   jobs:
-     flatten:
-       runs-on: ubuntu-latest
+jobs:
+  flatten:
+    runs-on: ubuntu-latest
 
-       steps:
-         - name: Checkout repository
-           uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-         - name: Flatten directory
-           run: |
-             if [ -d "Elif website" ]; then
-               shopt -s dotglob
-               mv "Elif website"/* .
-               mv "Elif website"/.[!.]* .
-               mv "Elif website"/..?* .
-               rmdir "Elif website"
-             else
-               echo "Directory 'Elif website' not found. Skipping."
-             fi
+      - name: Flatten directory
+        run: |
+          if [ -d "Elif website" ]; then
+            shopt -s dotglob
+            mv "Elif website"/* .
+            mv "Elif website"/.[!.]* .
+            mv "Elif website"/..?* .
+            rmdir "Elif website"
+          else
+            echo "Directory 'Elif website' not found. Skipping."
+          fi
 
-         - name: Commit changes
-           run: |
-             git config user.name "github-actions"
-             git config user.email "actions@github.com"
-             git add .
-             git commit -m "Flatten repository structure" || echo "Nothing to commit"
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Flatten repository structure" || echo "Nothing to commit"
 
-         - name: Push changes
-           run: git push
+      - name: Push changes
+        run: git push
