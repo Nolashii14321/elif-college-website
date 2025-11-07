@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm start --prefix Backend",
-    "install": "npm install --prefix Backend"
+    "install": "npm install --prefix Backend",
+    "postinstall": "cd Backend && npm install"
   }
 }
