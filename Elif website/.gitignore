@@ -1,0 +1,51 @@
+# Node.js dependencies
+node_modules/
+Backend/node_modules/
+package-lock.json
+Backend/package-lock.json
+
+# Environment variables (IMPORTANT: Never upload .env to GitHub!)
+.env
+Backend/.env
+.env.local
+.env.production
+
+# Database files
+*.db
+*.db-journal
+school.db
+school-backup.db
+
+# Logs
+logs/
+*.log
+Backend/logs/
+npm-debug.log*
+
+# Uploaded files (these should be on server only)
+uploads/
+Backend/uploads/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+backups/
+Backend/backups/
+*.bak
+
+# Test files
+Backend/test-db.js
+Backend/test-server.js
+Backend/create-admin.js
+Backend/create-admin-user.js
+Backend/list-users.js

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Results Portal</title>
+    <link rel="icon" type="image/png" href="/images/ALIF.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .report-card-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card-header {
+            text-align: center;
+            border-bottom: 2px solid #002244;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-card-header h2 {
+            color: #002244;
+            font-weight: 700;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .results-table th {
+            background-color: #f8f9fa;
+        }
+
+
+        /* 
+=========================================
+    PRINT STYLES
+=========================================
+*/
+        @media print {
+
+            /* NEW: This rule removes the default browser headers and footers */
+            @page {
+                size: auto;
+                /* auto is the initial value */
+                margin: 1cm;
+
+                /* Your desired margin */
+                /* Clearing header and footer */
+                @top-center {
+                    content: ""
+                }
+
+                @bottom-center {
+                    content: ""
+                }
+
+                @bottom-left {
+                    content: ""
+                }
+            }
+
+            /* Hide non-essential elements when printing */
+            .sidebar,
+            .top-navbar,
+            #sidebar-toggler,
+            .login-container,
+            .exam-selection-container,
+            .btn-container,
+            nav,
+            footer {
+                display: none !important;
+            }
+
+            /* Ensure the report card itself is visible and takes up the full page */
+            .report-card-container {
+                display: block !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+
+            /* Ensure the body itself has a plain background */
+            body {
+                background-color: white !important;
+                margin: 0;
+                /* Reset body margin, as @page handles it now */
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1. Login View -->
+    <div class="login-container" id="login-view">
+        <div class="card login-card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4"><img src="/images/ALIF.png" alt="School Logo"
+                        style="width: 72px; height: 72px; border-radius: 50%;">
+                    <h3 class="mt-3 fw-bold login-header">Student Results Portal</h3>
+                    <p class="text-muted">Enter your credentials to view your report card.</p>
+                </div>
+                <div id="login-alert" class="text-center mb-3"></div>
+                <form id="student-login-form">
+                    <div class="mb-3"><label for="studentId" class="form-label">Student ID</label><input type="text"
+                            class="form-control" id="studentId" placeholder="e.g. ELP250001" required></div>
+                    <div class="mb-3"><label for="password" class="form-label">Password (Birth Date)</label><input
+                            type="date" class="form-control" id="password" required></div>
+                    <div class="d-grid mt-4"><button type="submit" class="btn btn-primary btn-lg fw-bold">View
+                            Results</button></div>
+                    <div class="text-center mt-4"><a href="/HTML/index.html" class="text-decoration-none"><i
+                                class="fas fa-arrow-left me-1"></i> Back to Website</a></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Exam Selection View (Hidden by default) -->
+    <div class="login-container d-none" id="exam-selection-view">
+        <div class="card login-card">
+            <div class="card-body p-5">
+                <h4 class="text-center">Welcome, <span id="student-name-display"></span>!</h4>
+                <p class="text-center text-muted">Please select an exam to view the report card.</p>
+                <div class="d-grid gap-2" id="exam-buttons-container">
+                    <!-- Exam buttons will be generated here -->
+                </div>
+                <div class="text-center mt-4"><a href="#" id="logout-link" class="text-decoration-none"><i
+                            class="fas fa-sign-out-alt me-1"></i> Log Out</a></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Results View (Hidden by default) -->
+    <div class="container d-none" id="results-view">
+        <div class="report-card-container">
+            <div class="report-card-header">
+                <img src="/images/ALIF.png" alt="School Logo"
+                    style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1rem;">
+                <h2>Student Report Card</h2>
+                <h4 id="display-exam-name" class="text-muted"></h4>
+            </div>
+            <div class="student-info">
+                <div><strong>Student ID:</strong> <span id="display-student-id"></span></div>
+                <div><strong>Student Name:</strong> <span id="display-student-name"></span></div>
+                <div><strong>Grade:</strong> <span id="display-student-grade"></span></div>
+                <div><strong>Enrollment Date:</strong> <span id="display-enrollment-date"></span></div>
+            </div>
+            <h4 class="mb-3">Academic Performance</h4>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered results-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Score (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-table-body"></tbody>
+                </table>
+            </div>
+            <div class="text-center btn-container">
+                <button class="btn btn-info me-2" id="back-to-exams-btn"><i class="fas fa-arrow-left me-1"></i> Back to
+                    Exam Selection</button>
+                <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print me-1"></i> Print
+                    Report</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginView = document.getElementById('login-view');
+            const examSelectionView = document.getElementById('exam-selection-view');
+            const resultsView = document.getElementById('results-view');
+            const loginForm = document.getElementById('student-login-form');
+            const loginAlert = document.getElementById('login-alert');
+
+            let studentDataCache = null;
+
+            function showView(viewToShow) {
+                [loginView, examSelectionView, resultsView].forEach(v => v.classList.add('d-none'));
+                viewToShow.classList.remove('d-none');
+            }
+
+            function displayExamSelection(data) {
+                studentDataCache = data;
+                document.getElementById('student-name-display').textContent = data.studentInfo.name;
+                const container = document.getElementById('exam-buttons-container');
+                container.innerHTML = '';
+
+                // --- THIS IS THE FIX ---
+                // We now check if data.examList exists AND has a length greater than 0.
+                if (data.examList && data.examList.length > 0) {
+                    data.examList.forEach((exam, index) => {
+                        const button = document.createElement('button');
+                        button.className = 'btn btn-outline-primary';
+                        button.textContent = exam.exam_name;
+                        button.onclick = () => displayReportCard(index);
+                        container.appendChild(button);
+                    });
+                } else {
+                    container.innerHTML = '<p class="text-center">No exams have been created for your class yet.</p>';
+                }
+                showView(examSelectionView);
+            }
+
+            function displayReportCard(examIndex) {
+                const studentInfo = studentDataCache.studentInfo;
+                const examResult = studentDataCache.examList[examIndex];
+
+                document.getElementById('display-exam-name').textContent = examResult.exam_name;
+                document.getElementById('display-student-id').textContent = `ELP${250000 + studentInfo.id}`;
+                document.getElementById('display-student-name').textContent = studentInfo.name;
+                document.getElementById('display-student-grade').textContent = studentInfo.grade;
+                document.getElementById('display-enrollment-date').textContent = studentInfo.enrollmentDate;
+
+                const resultsTableBody = document.getElementById('results-table-body');
+                let tableHtml = '';
+
+                if (examResult.subjects) {
+                    const subjects = JSON.parse(examResult.subjects);
+                    const subjectEntries = Object.entries(subjects);
+
+                    let totalMarks = 0;
+                    let subjectCount = subjectEntries.length;
+                    subjectEntries.forEach(([subject, score]) => { totalMarks += parseInt(score) || 0; });
+                    const percentage = subjectCount > 0 ? (totalMarks / subjectCount).toFixed(2) : 0;
+                    let grade = 'F';
+                    if (percentage >= 90) grade = 'A+'; else if (percentage >= 80) grade = 'A';
+                    else if (percentage >= 70) grade = 'B'; else if (percentage >= 60) grade = 'C';
+                    else if (percentage >= 50) grade = 'D';
+
+                    tableHtml = subjectEntries.map(([subject, score]) => `<tr><td>${subject}</td><td>${score}</td></tr>`).join('');
+                    tableHtml += `<tr class="fw-bold table-light"><td colspan="2">Summary</td></tr>`;
+                    tableHtml += `<tr><td><strong>Total Marks</strong></td><td>${totalMarks} / ${subjectCount * 100}</td></tr>`;
+                    tableHtml += `<tr><td><strong>Percentage</strong></td><td>${percentage}%</td></tr>`;
+                    tableHtml += `<tr><td><strong>Grade</strong></td><td>${grade}</td></tr>`;
+                    tableHtml += `<tr><td><strong>Exam GPA</strong></td><td>${examResult.gpa || 'N/A'}</td></tr>`;
+                    tableHtml += `<tr><td><strong>Teacher's Remarks</strong></td><td>${examResult.remarks || 'Not provided.'}</td></tr>`;
+                } else {
+                    tableHtml = `<tr><td colspan="2" class="text-center text-muted">Results for this exam have not been published yet.</td></tr>`;
+                }
+
+                resultsTableBody.innerHTML = tableHtml;
+                showView(resultsView);
+            }
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const studentIdInput = document.getElementById('studentId').value.trim().toUpperCase().replace('ELP', '');
+                const realDbId = parseInt(studentIdInput) - 250000;
+                const passwordInput = document.getElementById('password').value.trim();
+                loginAlert.innerHTML = '';
+                const submitButton = loginForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Authenticating...`;
+
+                try {
+                    const response = await fetch('/api/student-portal/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ studentId: realDbId, birthDate: passwordInput })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error);
+                    displayExamSelection(data);
+                } catch (error) {
+                    loginAlert.innerHTML = `<div class="alert alert-danger">${error.message || 'Invalid Student ID or Password.'}</div>`;
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'View Results';
+                }
+            });
+
+            document.getElementById('back-to-exams-btn').addEventListener('click', () => showView(examSelectionView));
+            document.getElementById('logout-link').addEventListener('click', (e) => { e.preventDefault(); studentDataCache = null; showView(loginView); });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management | Admin Panel</title>
+    <link rel="icon" type="image/png" href="/images/ALIF.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3><img src="/images/ALIF.png" style="width: 60px; height: 60px; border-radius: 50px;" alt=""><span
+                        style="font-size: 20px;">Elif Pu Collage</span></h3>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="admin.html" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+                </li>
+                <li><a href="user.html"><i class="fas fa-users-cog"></i> <span>User Management</span></a></li>
+                <li><a href="student.html"><i class="fas fa-user-graduate"></i> <span>Student Records</span></a></li>
+                <li><a href="attendance.html"><i class="fas fa-user-check"></i> <span>Attendance</span></a></li>
+                <li><a href="teacher.html"><i class="fas fa-chalkboard-teacher"></i> <span>Teacher Management</span></a>
+                </li>
+                <li><a href="classmanagment.html"><i class="fas fa-book-open"></i> <span>Class Management</span></a>
+                </li>
+                <!-- NEW LINK ADDED HERE -->
+                <li><a href="exams.html"><i class="fas fa-file-alt"></i> <span>Exam Management</span></a></li>
+                <li><a href="gallery-admin.html"><i class="fas fa-images"></i> <span>Gallery</span></a></li>
+                <li><a href="fee-managment.html"><i class="fas fa-dollar-sign"></i> <span>Fee Management</span></a></li>
+                <li><a href="admissions-admin.html"><i class="fas fa-file-signature"></i> <span>Manage
+                            Admissions</span></a></li>
+                <li><a href="event.html"><i class="fas fa-calendar-alt"></i> <span>Event Calendar</span></a></li>
+                <li><a href="communications.html"><i class="fas fa-comments"></i> <span>Communication</span></a></li>
+                <!-- <li><a href="library.html"><i class="fas fa-book-reader"></i> <span>Library Management</span></a></li> -->
+                <li><a href="report.html"><i class="fas fa-chart-bar"></i> <span>Report Generation</span></a></li>
+                <!-- <li><a href="seceurity.html"><i class="fas fa-shield-alt"></i> <span>Security & Permissions</span></a> -->
+                </li>
+                <li><a href="content.html"><i class="fas fa-edit"></i> <span>Content Management</span></a></li>
+                <li><a href="resulty.html"><i class="fas fa-poll"></i> <span>Manage Results</span></a></li>
+                <li><a href="/HTML/index.html" id="logout-link"><i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span></a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <nav class="top-navbar">
+                <h4 class="mb-0 ms-3">Exam Management</h4>
+                <button class="btn btn-primary" id="sidebar-toggler" type="button"><i class="fas fa-bars"></i></button>
+            </nav>
+            <div class="content-area">
+                <div class="card main-table-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h6 class="m-0">Created Exams</h6>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#examModal"><i
+                                class="fas fa-plus me-1"></i> Create New Exam</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Exam Name</th>
+                                        <th>Class</th>
+                                        <th>Date</th>
+                                        <th>Academic Year</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exams-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Exam Modal -->
+    <div class="modal fade" id="examModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="examForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Exam</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="examName" class="form-label">Exam Name</label>
+                            <input type="text" class="form-control" id="examName" required
+                                placeholder="e.g., First Midterm">
+                        </div>
+                        <div class="mb-3">
+                            <label for="examClass" class="form-label">Class</label>
+                            <select class="form-select" id="examClass" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="examDate" class="form-label">Exam Date</label>
+                            <input type="date" class="form-control" id="examDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="academicYear" class="form-label">Academic Year</label>
+                            <input type="text" class="form-control" id="academicYear" required
+                                placeholder="e.g., 2024-2025">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Exam</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- START: COMMON CODE ---
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarToggler = document.getElementById('sidebar-toggler');
+            if (sidebarToggler) { sidebarToggler.addEventListener('click', () => sidebar.classList.toggle('toggled')); }
+            if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') { window.location.href = 'admin-login.html'; }
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) { logoutLink.addEventListener('click', (e) => { e.preventDefault(); sessionStorage.clear(); window.location.href = 'admin-login.html'; }); }
+            // --- END: COMMON CODE ---
+
+            const examModal = new bootstrap.Modal(document.getElementById('examModal'));
+            const examForm = document.getElementById('examForm');
+            const EXAMS_API = '/api/exams';
+            const CLASSES_API = '/api/classes';
+
+            async function fetchExams() {
+                try {
+                    const response = await fetch(EXAMS_API);
+                    const exams = await response.json();
+                    const tbody = document.getElementById('exams-tbody');
+                    tbody.innerHTML = exams.map(exam => `
+                        <tr>
+                            <td>${exam.name}</td>
+                            <td>${exam.class_name}</td>
+                            <td>${new Date(exam.exam_date).toLocaleDateString()}</td>
+                            <td>${exam.academic_year}</td>
+                            <td><button class="btn btn-sm btn-outline-danger" onclick="deleteExam(${exam.id})"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    `).join('');
+                } catch (error) {
+                    console.error('Failed to fetch exams:', error);
+                    document.getElementById('exams-tbody').innerHTML = `<tr><td colspan="5" class="text-center text-danger">Error loading exams.</td></tr>`;
+                }
+            }
+
+            async function populateClassesDropdown() {
+                try {
+                    const response = await fetch(CLASSES_API);
+                    const classes = await response.json();
+                    const select = document.getElementById('examClass');
+                    select.innerHTML = '<option value="">Select a Class</option>' + classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                } catch (error) {
+                    console.error('Failed to populate classes:', error);
+                }
+            }
+
+            examForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    name: document.getElementById('examName').value,
+                    class_id: document.getElementById('examClass').value,
+                    exam_date: document.getElementById('examDate').value,
+                    academic_year: document.getElementById('academicYear').value,
+                };
+
+                const response = await fetch(EXAMS_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    examForm.reset();
+                    examModal.hide();
+                    fetchExams();
+                } else {
+                    alert('Failed to create exam.');
+                }
+            });
+
+            window.deleteExam = async (id) => {
+                if (!confirm('Are you sure you want to delete this exam? Deleting it might affect saved results.')) return;
+
+                const response = await fetch(`${EXAMS_API}/${id}`, { method: 'DELETE' });
+
+                if (response.ok) {
+                    fetchExams();
+                } else {
+                    alert('Failed to delete exam.');
+                }
+            };
+
+            fetchExams();
+            populateClassesDropdown();
+        });
+    </script>
+</body>
+
+</html>

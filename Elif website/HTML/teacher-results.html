@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Results | Teacher Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css">
+
+
+    <style>
+        body {
+            background-color: #f4f7fc;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* Styles for the mobile-friendly student cards */
+        .student-result-card {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: .375rem;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .student-info h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .student-info p {
+            margin-bottom: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Media query for specific mobile adjustments */
+        @media (max-width: 576px) {
+            .display-6 {
+                font-size: 1.75rem;
+            }
+
+            /* Make title smaller on phones */
+            .student-result-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .student-result-card .action-btn {
+                width: 100%;
+                margin-top: 1rem;
+            }
+
+            .student-result-card .action-btn .btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-5">Manage Student Results</h1>
+            <a href="teacher-dashboard.html" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to
+                Dashboard</a>
+        </div>
+        <div class="card">
+            <div class="card-header bg-light p-3">
+                <!-- NEW: 2-step selection process -->
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-5">
+                        <label for="class-select" class="form-label visually-hidden">Select Class</label>
+                        <select id="class-select" class="form-select"></select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="exam-select" class="form-label visually-hidden">Select Exam</label>
+                        <select id="exam-select" class="form-select" disabled>
+                            <option value="">2. Select an Exam</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="save-alert"></div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Grade</th>
+                                <th>Exam GPA</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-tbody">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Please select a class to begin.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Modal (Updated for the new system) -->
+    <div class="modal fade" id="resultsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="resultsForm">
+                    <input type="hidden" name="studentId">
+                    <input type="hidden" name="examId">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Results for <span id="modalStudentName"></span></h5><button
+                            type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-info" role="alert">
+                            Editing scores for exam: <strong id="modalExamName"></strong>
+                        </div>
+                        <h6>Subject Scores (%)</h6>
+                        <div id="subjects-container" class="mb-3"></div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-subject-btn"><i
+                                class="fas fa-plus me-1"></i> Add Subject Field</button>
+                        <hr>
+                        <h6>Summary</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><label class="form-label">Exam GPA</label><input type="text"
+                                    name="gpa" class="form-control" placeholder="Auto-calculated..." readonly></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Teacher's Remarks</label><textarea
+                                    name="remarks" class="form-control" rows="1"></textarea></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary">Save
+                            Results</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const activeUser = JSON.parse(sessionStorage.getItem('activeUser'));
+            if (!activeUser || activeUser.role !== 'Teacher') { window.location.replace('portal_login.html'); return; }
+
+            // --- DOM Elements ---
+            const classSelect = document.getElementById('class-select');
+            const examSelect = document.getElementById('exam-select');
+            const tbody = document.getElementById('students-tbody');
+            const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'));
+            const resultsForm = document.getElementById('resultsForm');
+            const addSubjectBtn = document.getElementById('add-subject-btn');
+            const subjectsContainer = document.getElementById('subjects-container');
+
+            // --- API Endpoints ---
+            const RESULTS_API_URL = '/api/results';
+            const EXAMS_API_URL = '/api/exams';
+            let currentStudents = [];
+
+            // --- NEW, CORRECTED GPA Calculation ---
+            function scoreToGpaPoints(score) {
+                if (score >= 90) return 4.0;
+                if (score >= 80) return 3.0;
+                if (score >= 70) return 2.0;
+                if (score >= 60) return 1.0;
+                return 0.0;
+            }
+
+            function calculateAndSetGpa() {
+                const scoreInputs = subjectsContainer.querySelectorAll('.subject-score');
+                let totalPoints = 0, subjectCount = 0;
+                scoreInputs.forEach(input => {
+                    const score = parseFloat(input.value);
+                    if (!isNaN(score) && score >= 0) {
+                        totalPoints += scoreToGpaPoints(score);
+                        subjectCount++;
+                    }
+                });
+                resultsForm.elements.gpa.value = (subjectCount > 0) ? (totalPoints / subjectCount).toFixed(2) : '';
+            }
+            // Make sure calculation runs whenever a score is typed
+            subjectsContainer.addEventListener('input', calculateAndSetGpa);
+
+
+            // --- Core Functions (Unchanged) ---
+            async function loadTeacherClasses() {
+                try {
+                    const response = await fetch(`/api/teachers/dashboard-details?email=${activeUser.email}`);
+                    const data = await response.json();
+                    const teacherClasses = data.classes || [];
+                    if (teacherClasses.length > 0) {
+                        classSelect.innerHTML = '<option value="">1. Select a Class</option>' + teacherClasses.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                    } else {
+                        classSelect.innerHTML = '<option>No classes assigned</option>';
+                    }
+                } catch (error) { console.error("Failed to load classes:", error); }
+            }
+
+            async function loadExamsForClass(classId) {
+                examSelect.disabled = true;
+                examSelect.innerHTML = '<option value="">2. Select an Exam</option>';
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Please select an exam.</td></tr>`;
+                if (!classId) return;
+
+                try {
+                    const response = await fetch(`${EXAMS_API_URL}/by-class/${classId}`);
+                    const exams = await response.json();
+                    examSelect.innerHTML += exams.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+                    examSelect.disabled = false;
+                } catch (error) { console.error("Error loading exams:", error); }
+            }
+
+            async function loadStudentsForExam() {
+                const classId = classSelect.value;
+                const examId = examSelect.value;
+                if (!classId || !examId) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Please select a class and an exam.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center">Loading students...</td></tr>`;
+                try {
+                    const response = await fetch(`${RESULTS_API_URL}/class/${classId}/exam/${examId}`);
+                    currentStudents = await response.json();
+
+                    tbody.innerHTML = currentStudents.map(s => `
+                <tr>
+                    <td>${s.name}</td>
+                    <td>${s.grade || 'N/A'}</td>
+                    <td>${s.gpa || 'N/A'}</td>
+                    <td><button class="btn btn-sm btn-primary btn-edit-results" data-id="${s.student_id}">Edit Results</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="4" class="text-center">No students in this class.</td></tr>`;
+
+                } catch (error) { tbody.innerHTML = `<tr><td colspan="4" class="text-danger text-center">Error loading students.</td></tr>`; }
+            }
+
+
+            // --- Event Listeners ---
+            classSelect.addEventListener('change', () => loadExamsForClass(classSelect.value));
+            examSelect.addEventListener('change', loadStudentsForExam);
+            addSubjectBtn.addEventListener('click', () => addSubjectRow());
+
+            tbody.addEventListener('click', async (e) => {
+                const button = e.target.closest('button.btn-edit-results');
+                if (!button) return;
+                const studentId = button.dataset.id;
+                const student = currentStudents.find(s => s.student_id == studentId);
+                if (!student) return;
+
+                document.getElementById('modalStudentName').textContent = student.name;
+                document.getElementById('modalExamName').textContent = examSelect.options[examSelect.selectedIndex].text;
+                resultsForm.elements.studentId.value = studentId;
+                resultsForm.elements.examId.value = examSelect.value;
+
+                subjectsContainer.innerHTML = '';
+                const savedSubjects = student.subjects ? JSON.parse(student.subjects) : {};
+                if (Object.keys(savedSubjects).length > 0) {
+                    Object.entries(savedSubjects).forEach(([subject, score]) => addSubjectRow(subject, score));
+                } else { addSubjectRow(); }
+
+                resultsForm.elements.remarks.value = student.remarks || '';
+                calculateAndSetGpa(); // Calculate GPA when modal opens
+                resultsModal.show();
+            });
+
+            resultsForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const subjects = {};
+                document.querySelectorAll('#subjects-container .row').forEach(row => {
+                    const subjectName = row.querySelector('.subject-name').value.trim();
+                    const subjectScore = row.querySelector('.subject-score').value;
+                    if (subjectName && subjectScore) { subjects[subjectName] = parseInt(subjectScore); }
+                });
+
+                const dataToSave = {
+                    student_id: resultsForm.elements.studentId.value,
+                    exam_id: resultsForm.elements.examId.value,
+                    gpa: resultsForm.elements.gpa.value,
+                    remarks: resultsForm.elements.remarks.value,
+                    subjects: JSON.stringify(subjects)
+                };
+
+                try {
+                    const response = await fetch(RESULTS_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dataToSave)
+                    });
+                    if (!response.ok) throw new Error('Failed to save');
+                    resultsModal.hide();
+                    await loadStudentsForExam();
+                } catch (error) { alert(`Error: ${error.message}`); }
+            });
+
+
+            // --- Initial Load ---
+            loadTeacherClasses();
+        });
+
+        // Helper function to add subject rows
+        function addSubjectRow(subject = '', score = '') {
+            const subjectsContainer = document.getElementById('subjects-container');
+            const row = document.createElement('div');
+            row.className = 'row mb-2 align-items-center';
+            row.innerHTML = `<div class="col-5"><input type="text" class="form-control subject-name" placeholder="Subject Name" value="${subject}"></div><div class="col-5"><input type="number" class="form-control subject-score" placeholder="Score %" value="${score}" min="0" max="100"></div><div class="col-2"><button type="button" class="btn btn-sm btn-danger btn-remove-subject"><i class="fas fa-trash"></i></button></div>`;
+            subjectsContainer.appendChild(row);
+            row.querySelector('.btn-remove-subject').addEventListener('click', () => {
+                row.remove();
+                // Manually trigger the input event on the container to force recalculation
+                subjectsContainer.dispatchEvent(new Event('input'));
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard | Elif Pu Collage</title>
+    <link rel="icon" type="image/png" href="/images/ALIF.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body { background-color: #f4f7fc; }
+        .child-card { box-shadow: 0 4px 15px rgba(0,0,0,0.07); }
+
+        /* Responsive adjustments */
+        @media (max-width: 767.98px) {
+            .dashboard-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .dashboard-header .lead {
+                margin-bottom: 1rem;
+            }
+            .child-card-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+            .child-card-header .attendance-badge {
+                margin-top: 0.5rem;
+            }
+            .display-5 {
+                font-size: 2.5rem; /* Smaller title on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4 py-md-5">
+        <div class="dashboard-header d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <div>
+                <h1 class="display-5">Parent Dashboard</h1>
+                <p class="lead text-muted mb-0">Welcome, <span id="parent-name-display" class="fw-bold">Parent</span>!</p>
+            </div>
+            <a href="#" id="logout-btn" class="btn btn-secondary mt-3 mt-md-0"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+        </div>
+
+        <div id="children-container" class="row g-4">
+            <div class="col-12 text-center mt-5">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const activeUser = JSON.parse(sessionStorage.getItem('activeUser'));
+    if (!activeUser || activeUser.role !== 'Parent') {
+        window.location.replace('portal_login.html');
+        return;
+    }
+
+    const parentNameDisplay = document.getElementById('parent-name-display');
+    const childrenContainer = document.getElementById('children-container');
+
+    // --- Helper function to generate HTML for a single exam result ---
+    function createExamResultHtml(result) {
+        if (!result.subjects) {
+            return `<div class="mt-3"><p class="text-muted">Results for this exam have not been published yet.</p></div>`;
+        }
+        
+        const subjects = JSON.parse(result.subjects);
+        const subjectEntries = Object.entries(subjects);
+        let totalMarks = 0;
+        let subjectCount = subjectEntries.length;
+        subjectEntries.forEach(([_, score]) => { totalMarks += parseInt(score) || 0; });
+        const percentage = subjectCount > 0 ? (totalMarks / subjectCount).toFixed(2) : 0;
+        let grade = 'F';
+        if (percentage >= 90) grade = 'A+'; else if (percentage >= 80) grade = 'A';
+        else if (percentage >= 70) grade = 'B'; else if (percentage >= 60) grade = 'C';
+        else if (percentage >= 50) grade = 'D';
+
+        let tableHtml = `<table class="table table-sm table-bordered mt-2"><tbody>`;
+        tableHtml += subjectEntries.map(([subject, score]) => `<tr><td>${subject}</td><td>${score}%</td></tr>`).join('');
+        tableHtml += `</tbody></table>`;
+        
+        let summaryHtml = `<ul class="list-group list-group-flush">`;
+        summaryHtml += `<li class="list-group-item d-flex justify-content-between"><strong>Percentage:</strong> <span>${percentage}%</span></li>`;
+        summaryHtml += `<li class="list-group-item d-flex justify-content-between"><strong>Grade:</strong> <span>${grade}</span></li>`;
+        summaryHtml += `<li class="list-group-item d-flex justify-content-between"><strong>GPA:</strong> <span>${result.gpa || 'N/A'}</span></li>`;
+        summaryHtml += `<li class="list-group-item"><strong>Remarks:</strong> ${result.remarks || 'Not provided.'}</li>`;
+        summaryHtml += `</ul>`;
+
+        return tableHtml + summaryHtml;
+    }
+
+    async function loadDashboard() {
+        try {
+            const response = await fetch(`/api/parents/dashboard-details?email=${activeUser.email}`);
+            if (!response.ok) throw new Error('Could not load dashboard data.');
+            
+            const data = await response.json();
+            parentNameDisplay.textContent = data.parentName;
+
+            if (data.children && data.children.length > 0) {
+                // The main layout uses col-lg-6 to put children side-by-side on large screens
+                childrenContainer.innerHTML = data.children.map(child => `
+                    <div class="col-lg-6">
+                        <div class="card child-card h-100">
+                            <div class="child-card-header card-header bg-light d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0">${child.name}</h4>
+                                    <small class="text-muted">Grade: ${child.grade || 'N/A'} | Class: ${child.className || 'Not Assigned'}</small>
+                                </div>
+                                <div class="text-end attendance-badge">
+                                    <h6 class="mb-0">Attendance</h6>
+                                    <span class="badge bg-primary fs-6">${child.attendance !== null ? Math.round(child.attendance) + '%' : 'N/A'}</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Exam Results Overview</h5>
+                                ${child.results.length > 0 ? child.results.map((result, index) => `
+                                    <div class="exam-report pt-3">
+                                        ${index > 0 ? '<hr>' : ''}
+                                        <h6>${result.exam_name}</h6>
+                                        ${createExamResultHtml(result)}
+                                    </div>
+                                `).join('') : '<div class="alert alert-info">No exam results have been published for this student yet.</div>'}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                childrenContainer.innerHTML = '<div class="col-12"><div class="alert alert-info">No students are currently linked to your account. Please contact the administration.</div></div>';
+            }
+        } catch (error) {
+            childrenContainer.innerHTML = `<div class="col-12"><div class="alert alert-danger">Error: ${error.message}</div></div>`;
+        }
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        sessionStorage.clear();
+        window.location.href = 'portal_login.html';
+    });
+    
+    loadDashboard();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+/* --- Google Font --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* --- Global Variables & Styles --- */
+:root {
+    --primary-color: #000009d8;
+    --secondary-color: #111111;
+    --light-gray: #f8f9fa;
+    --dark-gray: #222222;
+    --text-color: #333333;
+    --sidebar-width: 260px;
+    --brand-green: #1CD91D;
+}
+
+/* --- General & Public Website Styles --- */
+body {
+    /* font-family: 'Poppins', sans-serif; */
+    font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-family: 'Nunito', sans-serif;
+}
+
+.bg-brand-green {
+    background-color: var(--brand-green);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #002244;
+    border-color: #002244;
+}
+
+.hover-card {
+    transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #333;
+    border-color: #333;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0, 51, 102, 0.7), rgba(0, 51, 102, 0.7)), url('/images/bg.jpg') no-repeat center center;
+    background-size: cover;
+    color: white;
+    padding: 120px 0;
+    text-align: center;
+}
+
+.hero-section h1 {
+    color: white;
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--light-gray);
+}
+
+.login-card {
+    max-width: 450px;
+    width: 100%;
+}
+
+/* 
+=========================================
+    BEAUTIFUL FOOTER STYLES
+=========================================
+*/
+.footer-section {
+    background-image: linear-gradient(rgba(0, 34, 68, 0.95), rgba(40, 40, 40, 0.8)), url('/images/./fOOTER.jpg');
+    /* <-- CHANGE THIS IMAGE PATH */
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    color: white;
+}
+
+.footer-content {
+    position: relative;
+    z-index: 2;
+}
+
+.footer-logo img {
+    max-width: 100px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+.footer-text p {
+    margin-bottom: 14px;
+    font-size: 14px;
+    color: #b0bec5;
+    /* Lighter text color */
+    line-height: 28px;
+}
+
+.footer-social-icon span {
+    color: #fff;
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.footer-social-icon a {
+    color: #fff;
+    font-size: 16px;
+    margin-right: 15px;
+    transition: all .3s ease-in-out;
+}
+
+.footer-social-icon i {
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    line-height: 38px;
+    border-radius: 50%;
+}
+
+.facebook-bg {
+    background: #3B5998;
+}
+
+.twitter-bg {
+    background: #55ACEE;
+}
+
+.instagram-bg {
+    background: #E1306C;
+}
+
+.footer-social-icon a:hover {
+    transform: translateY(-5px);
+}
+
+.footer-widget-heading h3 {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.footer-widget-heading h3::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    height: 2px;
+    width: 50px;
+    background: var(--brand-green);
+    /* Use your brand color */
+}
+
+.footer-widget ul {
+    padding-left: 0;
+}
+
+.footer-widget ul li {
+    display: inline-block;
+    width: 50%;
+    margin-bottom: 12px;
+}
+
+.footer-widget ul li a {
+    color: #b0bec5;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+}
+
+.footer-widget ul li a:hover {
+    color: var(--brand-green);
+}
+
+.footer-contact-info {
+    list-style: none;
+    padding-left: 0;
+}
+
+.footer-contact-info li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    color: #b0bec5;
+}
+
+.footer-contact-info i {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    color: var(--brand-green);
+    width: 20px;
+}
+
+.copyright-area {
+    background: #1a2853;
+    /* Darker blue */
+    padding: 25px 0;
+}
+
+.copyright-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #878787;
+}
+
+.copyright-text p a {
+    color: var(--brand-green);
+    text-decoration: none;
+}
+
+
+
+
+
+/* 
+=========================================
+    STUDENT RESULTS PORTAL STYLES
+=========================================
+*/
+.report-card-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.report-card-header {
+    text-align: center;
+    border-bottom: 2px solid #002244;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.report-card-header h2 {
+    color: #002244;
+    font-weight: 700;
+}
+
+.student-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 2rem;
+    margin-bottom: 2rem;
+}
+
+.results-table th {
+    background-color: #f8f9fa;
+}
+
+
+/* 
+=========================================
+    ADMIN DASHBOARD STYLES
+=========================================
+*/
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    background-color: #000009d8;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1030;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h3 {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    color: #ccc;
+    padding: 15px 20px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.sidebar-nav li a:hover,
+.sidebar-nav li a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-left: 4px solid var(--secondary-color);
+    padding-left: 16px;
+}
+
+.sidebar-nav li a i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+}
+
+/* --- Main Content Area --- */
+.main-content {
+    flex-grow: 1;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+.top-navbar {
+    background-color: #fff;
+    padding: 15px 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.content-area {
+    padding: 30px;
+    background-color: #f4f7fc;
+    flex-grow: 1;
+}
+
+.stat-card {
+    border-left: 5px solid;
+}
+
+.stat-card.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.stat-card.border-success {
+    border-color: #1cc88a !important;
+}
+
+.stat-card.border-warning {
+    border-color: #f6c23e !important;
+}
+
+.stat-card.border-danger {
+    border-color: #e74a3b !important;
+}
+
+.stat-card i {
+    font-size: 2.5rem;
+    opacity: 0.3;
+}
+
+.class-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.class-card .dropdown {
+    position: static;
+}
+
+
+/* 
+=========================================
+    LIBRARY MANAGEMENT STYLES
+=========================================
+*/
+.book-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.book-cover {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.book-title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-author {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+
+/* 
+=========================================
+    DARK THEME STYLES
+=========================================
+*/
+body[data-theme="dark"] {
+    background: #222 !important;
+    color: #fff !important;
+}
+
+body[data-theme="dark"] .sidebar,
+body[data-theme="dark"] .main-content {
+    background: #23272b !important;
+}
+
+body[data-theme="dark"] .card,
+body[data-theme="dark"] .form-control,
+body[data-theme="dark"] .form-select,
+body[data-theme="dark"] .dropdown-menu,
+body[data-theme="dark"] .top-navbar {
+    background: #23272b !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+body[data-theme="dark"] .table {
+    color: #fff;
+}
+
+body[data-theme="dark"] .table th,
+body[data-theme="dark"] .table td {
+    border-color: #444 !important;
+}
+
+body[data-theme="dark"] .table-hover>tbody>tr:hover {
+    color: #fff;
+    background-color: #2c3136 !important;
+}
+
+body[data-theme="dark"] .stat-card {
+    background: #2c2f34 !important;
+    color: #fff !important;
+}
+
+body[data-theme="dark"] h1,
+body[data-theme="dark"] h2,
+body[data-theme="dark"] h3,
+body[data-theme="dark"] h4,
+body[data-theme="dark"] h5,
+body[data-theme="dark"] h6 {
+    color: #fff !important;
+}
+
+body[data-theme="dark"] .btn-primary {
+    background: #2eed03 !important;
+    border-color: #01da50 !important;
+}
+
+body[data-theme="dark"] .content-area {
+    background-color: #111827 !important;
+}
+
+
+/* 
+=========================================
+    RESPONSIVE STYLES
+=========================================
+*/
+
+/* Student Library Responsive */
+@media (max-width: 767.98px) {
+    #library-view h1 {
+        font-size: 2rem;
+    }
+
+    #library-view .d-flex.justify-content-between {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #library-view #logout-btn {
+        margin-top: 1rem;
+    }
+}
+
+/* Admin Sidebar Toggle Logic */
+@media (min-width: 992px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: var(--sidebar-width);
+    }
+
+    #sidebar-toggler {
+        display: none;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(calc(-1 * var(--sidebar-width)));
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    #sidebar-toggler {
+        display: block;
+    }
+
+    .sidebar.toggled {
+        transform: translateX(0);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+    }
+}
+
+
+/* 
+=========================================
+    PRINT STYLES
+=========================================
+*/
+@media print {
+
+    /* Hide non-essential elements when printing */
+    .sidebar,
+    .top-navbar,
+    #sidebar-toggler,
+    .login-container,
+    .exam-selection-container,
+    .btn-container,
+    nav,
+    footer {
+        display: none !important;
+    }
+
+    /* Ensure the report card itself is visible and takes up the full page */
+    .report-card-container {
+        display: block !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* Ensure the body itself has a plain background and good margins for printing */
+    body {
+        background-color: white !important;
+        margin: 1cm;
+    }
+}
