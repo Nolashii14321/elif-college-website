@@ -119,11 +119,11 @@ const mysql = require('mysql2');
 
 const db = mysql.createPool({
     connectionLimit: 10,
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER || 'root',
-    password: (process.env.DB_PASSWORD || 'root').replace(/^['"]|['"]$/g, ''),
-    database: process.env.DB_NAME || 'school_db'
+    host: process.env.DB_HOST || process.env.MYSQLHOST || 'localhost',
+    port: process.env.DB_PORT || process.env.MYSQLPORT || 3306,
+    user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
+    password: (process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || 'root').replace(/^['"]|['"]$/g, ''),
+    database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'school_db'
 });
 
 db.getConnection((err, connection) => {
