@@ -20,6 +20,9 @@ const getEnv = (key) => {
     return process.env[mysqlKey] || '';
 };
 
+console.log('DB_HOST (env or MYSQLHOST):', getEnv('DB_HOST'));
+console.log('DB_USER (env or MYSQLUSER):', getEnv('DB_USER'));
+
 // Check required environment variables (allow DB_* or MYSQL*)
 const requiredVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
 const missingVars = [];
@@ -44,3 +47,4 @@ console.log('🌐 Port:', process.env.PORT || 3000);
 console.log('');
 
 require('./server.js');
+
