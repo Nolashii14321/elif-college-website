@@ -1,7 +1,17 @@
+ permissions:
+     contents: write
+   ```
+
+   Here’s the full updated file:
+
+   ```yaml
    name: Unzip Uploaded Project
 
    on:
      workflow_dispatch:
+
+   permissions:
+     contents: write
 
    jobs:
      unzip:
@@ -29,3 +39,4 @@
          - name: Push changes
            run: |
              git push
+   ```
